@@ -2,7 +2,6 @@
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, UseQueryResult } from "react-query";
 import axios from "axios";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 interface resultType {
   fundId: number;
@@ -27,7 +26,6 @@ interface FundMemberInfo {
 }
 
 export default function UserRecordInfoMemberFund() {
-  const playClickSound = useClickSound();
   const router = useRouter();
   const params = useParams<{ userId?: string }>();
   const id: string | undefined = params.userId;
@@ -58,10 +56,7 @@ export default function UserRecordInfoMemberFund() {
     : { result: null };
 
   return (
-    <div
-      className="shadow row-span-5 overflow-auto p-4"
-      style={{ maxHeight: "50vh" }}
-    >
+    <div className="shadow row-span-5 overflow-auto max-h-96 p-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -69,7 +64,7 @@ export default function UserRecordInfoMemberFund() {
               펀드이름
             </th>
             <th scope="col" className="px-6 py-3">
-              상태
+              기간
             </th>
             <th scope="col" className="px-6 py-3">
               펀드 자금
@@ -85,18 +80,7 @@ export default function UserRecordInfoMemberFund() {
         <tbody>
           {result?.map((item, i) => {
             return (
-              <tr
-                key={i}
-                className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 "
-                onClick={() => {
-                  playClickSound();
-                  router.push(
-                    item.status == "RUNNING"
-                      ? `/fund/in-progress/${item.fundId}`
-                      : `/fund/recruiting/${item.fundId}`
-                  );
-                }}
-              >
+              <tr className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <th
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -104,7 +88,7 @@ export default function UserRecordInfoMemberFund() {
                   {item.fundName}
                 </th>
                 <td className="px-6 py-4">{item.status}</td>
-                <td className="px-6 py-4">{item.fundAsset.toLocaleString()}원</td>
+                <td className="px-6 py-4">{item.fundAsset}원</td>
                 <td className="px-6 py-4">{item.industry}</td>
                 <td className="px-6 py-4">{item.roi}%</td>
               </tr>

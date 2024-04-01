@@ -75,27 +75,6 @@ type marketInfoDataType = {
 }
 type marketInfoListDataType = marketInfoDataType[];
 
-// 게임 종료 시 데이터
-// 실제 주식 종목
-type stockInfoDtoDataType = {
-    stockId :number,
-    stockName :string,
-};
-type stockInfoDtoListDataType = stockInfoDtoDataType[];
-
-type singleGameEndInfoDataType = {
-    initialAsset :number,
-    finalAsset :number,
-    netProfit :number,
-    profitMargin :number,
-
-    startDate :string,
-    endDate :string,
-
-    stockInfoDtoList :stockInfoDtoListDataType,
-    singleGameChance :number,
-}
-
 
 type Store = {
     // 해당 게임 log id
@@ -143,29 +122,6 @@ type Store = {
     // 현재 선택한 주식 종목 index 상태관리 변수
     selectedStockIndex :number;
     setSelectedStockIndex :(value :number) => void;
-
-    isBuy :boolean;
-    setIsBuy :(value :boolean) => void;
-    
-    isBuySellModalOpen :boolean;
-    setIsBuySellModalOpen :(value :boolean) => void;
-    
-    singleGameEndInfoData :singleGameEndInfoDataType | any;
-    setSingleGameEndInfoData :(value :singleGameEndInfoDataType) => void;
-    
-    isOpenEndModal :boolean;
-    setIsOpenEndModal :(value :boolean) => void;
-
-    selectedSecondaryIndicator :number;
-    setSelectedSecondaryIndicator : (value :number) => void;
-
-    startDate :any,
-    setStartDate :(value :any) => void,
-    endDate :any,
-    setEndDate :(value :any) => void,
-
-    stocks :number,
-    setStocks :(value :number) => void,
 };
 
 
@@ -216,30 +172,6 @@ const SingleGameStore = create<Store>((set: any) => ({
     // 현재 선택한 주식 종목 index 상태관리 변수
     selectedStockIndex: 0,
     setSelectedStockIndex: (value) => set({ selectedStockIndex : value }),
-
-    singleGameEndInfoData: [],
-    setSingleGameEndInfoData: (value) => set({ singleGameEndInfoData : value }),
-
-    isBuy :false,
-    setIsBuy :(value) => set({ isBuy : value }),
-
-    isBuySellModalOpen :false,
-    setIsBuySellModalOpen :(value) => set({ isBuySellModalOpen : value }),
-
-    isOpenEndModal :false,
-    setIsOpenEndModal :(value) => set({ isOpenEndModal :value }),
-
-    selectedSecondaryIndicator : 1,
-    setSelectedSecondaryIndicator :(value) => set({ selectedSecondaryIndicator : value }),
-
-
-    startDate :null,
-    setStartDate :(value) => set({ startDate : value }),
-    endDate :null,
-    setEndDate :(value) => set({ endDate : value }),
-
-    stocks :0,
-    setStocks :(value) => set({ stocks : value }),
 }));
 
 export default SingleGameStore;

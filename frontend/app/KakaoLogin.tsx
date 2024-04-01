@@ -3,11 +3,9 @@ import Image from "next/image";
 import kakaoLoginImg from "./../public/src/assets/images/kakao.svg";
 import { TypewriterEffectSmooth } from "../public/src/components/ui/typewriter-effect";
 import backgroundVideo from "./../static/videos/bg.mp4";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
-// https://www.pixilart.com/art/blue-line-97f3322f9f26af9
+// https://www.pexels.com/ko-kr/video/5726497/
 
 export default function KakaoLogin() {
-  const playClickSound = useClickSound();
   const words = [
     {
       text: "지",
@@ -15,27 +13,26 @@ export default function KakaoLogin() {
     },
     {
       text: "금",
-      className: "text-small-2",
+      className: "text-small-1",
     },
     {
       text: "이",
-      className: "text-small-3",
+      className: "text-small-1",
     },
     {
       text: "니",
-      className: "text-small-4",
+      className: "text-small-1",
     },
     {
       text: "?",
-      className: "text-small-5",
+      className: "text-small-1",
     },
     {
       text: "!",
-      className: "text-small-6",
+      className: "text-small-1",
     },
   ];
   const loginHandler = () => {
-    playClickSound();
     if (typeof window !== "undefined") {
       const API_URL = "https://j10a207.p.ssafy.io";
       const KAKAO_AUTH_URL = `${API_URL}/oauth2/authorization/kakao`;
@@ -56,7 +53,7 @@ export default function KakaoLogin() {
 
       {/* 컨텐츠 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center ">
-        <p className="dark:text-neutral-200 text-xs sm:text-base text-black">
+        <p className="dark:text-neutral-200 text-xs sm:text-base text-white">
           Big Data Stock Trading Game
         </p>
         <TypewriterEffectSmooth words={words} />
