@@ -1,17 +1,13 @@
 package com.backend.api.domain.notice.entity;
 
-
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.backend.api.domain.BaseEntity;
 import com.backend.api.domain.member.entity.Member;
-import com.backend.api.domain.notice.type.AlarmType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -20,7 +16,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -37,25 +32,15 @@ public class Notice extends BaseEntity {
     private Member member;
 
     @NotNull
-    private String sender;
-
-    @NotNull
     private String content; // 내용
 
     @NotNull
-    @Setter
     private boolean isRead; // 읽었는지 여부
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private AlarmType alarmType; // 알림의 종류 (예: "게임초대", "공지사항" 등)
-
     @Builder
-    public Notice(Member member, String sender, String content, boolean isRead, AlarmType alarmType) {
+    public Notice(Member member, String content, boolean isRead) {
         this.member = member;
-        this.sender = sender;
         this.content = content;
         this.isRead = isRead;
-        this.alarmType = alarmType;
     }
 }

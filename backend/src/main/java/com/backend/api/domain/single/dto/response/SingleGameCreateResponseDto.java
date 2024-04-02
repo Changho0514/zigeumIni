@@ -1,7 +1,6 @@
 package com.backend.api.domain.single.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
 
 @Schema(name = "싱글게임 생성 response Dto", description = "싱글게임 관련 response Dto")
@@ -26,11 +25,7 @@ public record SingleGameCreateResponseDto(
     List<SingleTradeListDto> tradeList,
 
     @Schema(description = "전날 대비 변화량")
-    List<NextDayInfoResponseDto> nextDayInfos,
-
-    @Schema(description = "350일간 원자재 가격 목록")
-    List<RawMaterialRes> rawMaterialList
-
+    List<NextDayInfoResponseDto> nextDayInfos
 
 
 ) {

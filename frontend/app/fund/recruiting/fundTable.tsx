@@ -5,7 +5,6 @@ import { useQuery, UseQueryResult } from "react-query";
 import type { FundResult } from "@/public/src/stores/fund/crud/FundCrudStore";
 import fundCrudStore, { FundInfo } from "@/public/src/stores/fund/crud/FundCrudStore";
 import { useEffect, useState } from "react";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 
 const fetchFundInfo = async() => {
@@ -22,12 +21,11 @@ const fetchFundInfo = async() => {
 
 export default function FundTable(){
   const [fundList, setFundList] = useState<FundResult[]>([])
-  const { data, isLoading, error }: UseQueryResult<FundInfo,Error> = useQuery('RecruitingFundInfo', fetchFundInfo );
+  const { data, isLoading, error }: UseQueryResult<FundInfo,Error> = useQuery('FundInfo', fetchFundInfo );
   const { searchQuery } = fundCrudStore();
   const [filteredFunds, setFilteredFunds] = useState<FundResult[]>([])
   const router = useRouter();
-  const playClickSound = useClickSound();
-
+  
   useEffect(() => {
     // searchQuery 기반으로 FundList filtering
     const filtered: FundResult[] = fundList.filter((fund) => fund.fundName.includes(searchQuery));
@@ -50,7 +48,7 @@ export default function FundTable(){
   }
 
   const { result }: {result: FundResult[] | null} = data ? data: {result: null};
-  // console.log(result)
+  console.log(result)
   
 
   return (
@@ -83,10 +81,7 @@ export default function FundTable(){
           filteredFunds.map((fund: FundResult, i:number)=> {
           return (
               <tr key={i}
-              onClick={()=> {
-                playClickSound();
-                router.push(`./recruiting/${fund.fundId}`, )
-              }} 
+              onClick={()=> {router.push(`./recruiting/${fund.fundId}`, )}} 
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:cursor-pointer">
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                       {fund.fundName}

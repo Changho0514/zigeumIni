@@ -1,19 +1,14 @@
-"use client";
+// "use client";
 import Image from "next/image";
 import styles from "./page.module.css";
 import UserRecord from "./ProfileRecord";
-import bronze from "../../../public/src/assets/images/Tier/diamond.png";
+import bronze from "../../../public/src/assets/images/bronze.png";
 import profileStore from "@/public/src/stores/profile/profileStore";
 import { useQuery, UseQueryResult } from "react-query";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import userStore from "@/public/src/stores/user/userStore";
 import Swal from "sweetalert2";
-import { useMutation, useQueryClient } from "react-query";
-
-import ProfileFriendRequest from "./ProfileFriendRequest";
-import useGetProfileRank from "@/public/src/hooks/useGetProfileRank";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 interface resultType {
   memberID: number;
@@ -37,10 +32,6 @@ export default function UserInfo() {
   const params = useParams<{ userId?: string }>();
   const id: string | undefined = params.userId;
   const { memberId } = userStore();
-  const { isOpen, setIsOpen, setFriendRequests, friendRequests } =
-    profileStore();
-  const playClickSound = useClickSound();
-
   const fetchUserInfo = async () => {
     const response = await axios({
       method: "get",
@@ -53,89 +44,33 @@ export default function UserInfo() {
   };
 
   const { toggleButton, setToggleButton } = profileStore();
-  const {
-    data: userInfoData,
-    isLoading: userInfoLoading,
-    error: userInfoError,
-  }: UseQueryResult<UserInfo, Error> = useQuery("userInfo", fetchUserInfo);
+  const { data, isLoading, error }: UseQueryResult<UserInfo, Error> = useQuery(
+    "userInfo",
+    fetchUserInfo
+  );
 
-  const checkFriendRequest = async () => {
-    const response = await axios({
-      method: "get",
-      url: `https://j10a207.p.ssafy.io/api/friend/check-friend?followingId=${id}`,
+  if (isLoading) {
+    return <div className="rainbow"></div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  const { result }: { result: resultType | null } = data
+    ? data
+    : { result: null };
+
+  const sendFriendRequest = async () => {
+    axios({
+      method: "post",
+      url: "https://j10a207.p.ssafy.io/api/friend-ask",
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
       },
     });
-    return response.data;
   };
-
-  const {
-    data: isFriendData,
-    isLoading: isFriendLoading,
-    error: isFriendError,
-  }: UseQueryResult<any, Error> = useQuery("isFriend", checkFriendRequest);
-
-  const queryClient = useQueryClient();
-
-  const { mutate: sendFriendRequest } = useMutation(
-    (request: any) =>
-      axios({
-        method: "post",
-        url: "https://j10a207.p.ssafy.io/api/friend-ask",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
-        data: request,
-      }),
-    {
-      onSuccess: () => {
-        Swal.fire("친구 하기 요청을 보냈어요!");
-        // 필요한 경우 특정 쿼리를 무효화할 수 있습니다.
-        queryClient.invalidateQueries("isFriend");
-      },
-    }
-  );
-
-  const { mutate: sendNoFriendRequest } = useMutation(
-    () =>
-      axios({
-        method: "delete",
-        url: `https://j10a207.p.ssafy.io/api/friend/delete?followingId=${id}`,
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-        },
-      }),
-    {
-      onSuccess: () => {
-        Swal.fire("친구 안하기 요청을 보냈어요!");
-        // 필요한 경우 특정 쿼리를 무효화할 수 있습니다.
-        queryClient.invalidateQueries("isFriend");
-      },
-    }
-  );
-
-  if (userInfoLoading || isFriendLoading) {
-    return <div className="rainbow"></div>;
-  }
-
-  if (userInfoError || isFriendError) {
-    return (
-      <div>
-        Error: {userInfoError?.message} & {isFriendError?.message}
-      </div>
-    );
-  }
-
-  const { result }: { result: resultType | null } = userInfoData
-    ? userInfoData
-    : { result: null };
-
-  const myFriend = isFriendData?.result;
-
   const handleFriendRequest = () => {
-    const request = { nickname: result?.nickname };
-    sendFriendRequest(request);
+    Swal.fire("친구요청을 보냈어요!");
   };
 
   return (
@@ -150,40 +85,15 @@ export default function UserInfo() {
           } rounded-md row-start-1 row-end-5 flex justify-center items-center relative`}
         >
           {/* 프로필 id와 내 id가 다르면 보여주기 */}
-          {Number(memberId) != Number(id) ? (
-            myFriend !== true ? (
-              <button
-                type="button"
-                className="w-48 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 absolute bottom-2 "
-                onClick={() => {
-                  playClickSound();
-                  handleFriendRequest();
-                }}
-              >
-                친구 하기
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="w-48 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 absolute bottom-2 "
-                onClick={() => {
-                  playClickSound();
-                  sendNoFriendRequest();
-                }}
-              >
-                친구 안하기
-              </button>
-            )
-          ) : (
+          {Number(memberId) != Number(id) && (
             <button
               type="button"
               className="w-48 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 absolute bottom-2 "
               onClick={() => {
-                playClickSound();
-                setIsOpen(!isOpen);
+                handleFriendRequest();
               }}
             >
-              친구 요청 목록
+              팔로우
             </button>
           )}
           {/* 만약 팔로우가 되어있을때는 언팔로우를 보여주기 반대는 반대 */}
@@ -191,16 +101,17 @@ export default function UserInfo() {
             {result?.nickname}
           </p>
         </div>
-        <div className="row-start-5 row-end-9 flex justify-center items-center">
+        <div className=" row-start-5 row-end-9 flex justify-center items-center">
           <Image
-            className="ring-2 rounded-full ring-background-1"
-            src={useGetProfileRank(result?.rankPoint)}
-            alt="Tier Image"
-            width={150}
+            className="rounded-full w-40 h-50"
+            src={bronze}
+            alt="Extra large avatar"
+            width={500}
+            height={500}
           ></Image>
         </div>
         <div className="row-start-9 row-end-13 flex justify-center items-center">
-          {result?.rankPoint}점
+          {result?.rankPoint}
         </div>
       </aside>
       <UserRecord></UserRecord>

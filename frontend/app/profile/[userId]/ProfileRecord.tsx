@@ -5,7 +5,6 @@ import { useQuery, UseQueryResult } from "react-query";
 import { useParams } from "next/navigation";
 import profileStore from "@/public/src/stores/profile/profileStore";
 import axios from "axios";
-import useGetProfileImage from "@/public/src/hooks/useGetProfileImage";
 
 interface resultType {
   memberID: number;
@@ -61,17 +60,18 @@ export default function UserRecord() {
       <div className="shadow row-start-1 row-end-4 grid grid-cols-12">
         <div className="col-start-1 col-end-5 flex justify-center items-center ">
           <Image
-            className="rounded-full ring-2 ring-background-1 dark:ring-background-1"
-            src={useGetProfileImage(result?.asset)}
+            className="w-32 h-32 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500 "
+            src={penguin}
             alt="Extra large avatar"
-            width={120}
+            width={100}
+            height={100}
           ></Image>
         </div>
         <div className="col-start-5 col-end-13 grid grid-rows-12">
-          <div className="grid m-4 row-start-1 row-end-13 justify-center items-center  grid-cols-4">
+          <div className=" m-4 row-start-1 row-end-13 flex justify-center items-center grid grid-cols-4">
             <div className="flex-col justify-center items-center col-span-1">
               <div className="text-center font-extrabold text-xl">
-                {result?.asset.toLocaleString()}원
+                {result?.asset}
               </div>
               <div className="text-center text-textColor-1">시드</div>
             </div>
@@ -86,10 +86,7 @@ export default function UserRecord() {
                 {result &&
                   (result.win + result.lose == 0
                     ? `0%`
-                    : `${(
-                        (result.win / (result.win + result.lose)) *
-                        100
-                      ).toFixed(2)}%`)}
+                    : `${(result.win / (result.win + result.lose)) * 100}%`)}
               </div>
               <div className="text-center text-textColor-1">승률</div>
             </div>
@@ -97,17 +94,9 @@ export default function UserRecord() {
               <div className="text-center font-extrabold text-xl text-red-500">
                 {toggleButton == "single"
                   ? result &&
-                    `${
-                      result.singleAvgRoi !== null
-                        ? result.singleAvgRoi.toFixed(2)
-                        : 0
-                    }%`
+                    `${result.singleAvgRoi !== null ? result.singleAvgRoi : 0}%`
                   : result &&
-                    `${
-                      result.multiAvgRoi !== null
-                        ? result.multiAvgRoi.toFixed(2)
-                        : 0
-                    }%`}
+                    `${result.multiAvgRoi !== null ? result.multiAvgRoi : 0}%`}
               </div>
               <div className="text-center text-textColor-1">평균 수익률</div>
             </div>

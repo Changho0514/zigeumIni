@@ -24,16 +24,17 @@
   border-radius: 30px;
 }
 
+
 * {
   padding: 0;
   margin: 0;
-  font-family: Netmarble;
+  font-family: DungGeunMo;
 }
 
 @font-face {
-  font-family: "Netmarble";
+  font-family: "DungGeunMo";
   font-weight: 200;
-  src: url("../public/src/fonts/Netmarble.ttf") format("truetype");
+  src: url("../public/src/fonts/DungGeunMo.ttf") format("truetype");
 }
 
 @-webkit-keyframes spin {
