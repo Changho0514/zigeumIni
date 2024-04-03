@@ -1,10 +1,11 @@
 package com.backend.api.domain.multi.repository;
 
-import com.backend.api.domain.multi.entity.MultiGameLog;
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.backend.api.domain.multi.entity.MultiGameLog;
 
 public interface MultiGameLogRepository extends JpaRepository<MultiGameLog, Long> {
 	@Query("""
@@ -14,7 +15,4 @@ public interface MultiGameLogRepository extends JpaRepository<MultiGameLog, Long
 		""")
 	List<MultiGameLog> findAllByMemberId(Long loginUserId);
 
-	List<MultiGameLog> findByGameId(Long gameId);
-
-	Optional<MultiGameLog> findByMemberIdAndGameIdAndRound(Long memberId, Long gameId, Integer round);
 }

@@ -70,37 +70,10 @@ type trendDataType = {
 type trendListDataType = trendDataType[];
 
 // 시장 정보
-type rawMaterialType = {
-    date :string | null,
-    wti :string | null,
-    copper :string | null,
-    gold :string | null,
-    wheat :string | null,
-    silver :string | null,
-    gas :string | null,
+type marketInfoDataType = {
+
 }
-type rawMaterialListType = rawMaterialType[];
-
-// 게임 종료 시 데이터
-// 실제 주식 종목
-type stockInfoDtoDataType = {
-    stockId :number,
-    stockName :string,
-};
-type stockInfoDtoListDataType = stockInfoDtoDataType[];
-
-type singleGameEndInfoDataType = {
-    initialAsset :number,
-    finalAsset :number,
-    netProfit :number,
-    profitMargin :number,
-
-    startDate :string,
-    endDate :string,
-
-    stockInfoDtoList :stockInfoDtoListDataType,
-    singleGameChance :number,
-}
+type marketInfoListDataType = marketInfoDataType[];
 
 
 type Store = {
@@ -143,35 +116,12 @@ type Store = {
     setTrendListData :(value :any) => void;
 
     // 시장 정보 배열 데이터 상태관리 변수
-    rawMaterialListData :rawMaterialListType;
-    setRawMaterialListData :(value :rawMaterialListType) => void;
+    marketInfoListData :any;
+    setMarketInfoListData :(value :any) => void;
 
     // 현재 선택한 주식 종목 index 상태관리 변수
     selectedStockIndex :number;
     setSelectedStockIndex :(value :number) => void;
-
-    isBuy :boolean;
-    setIsBuy :(value :boolean) => void;
-    
-    isBuySellModalOpen :boolean;
-    setIsBuySellModalOpen :(value :boolean) => void;
-    
-    singleGameEndInfoData :singleGameEndInfoDataType | any;
-    setSingleGameEndInfoData :(value :singleGameEndInfoDataType) => void;
-    
-    isOpenEndModal :boolean;
-    setIsOpenEndModal :(value :boolean) => void;
-
-    selectedSecondaryIndicator :number;
-    setSelectedSecondaryIndicator : (value :number) => void;
-
-    startDate :any,
-    setStartDate :(value :any) => void,
-    endDate :any,
-    setEndDate :(value :any) => void,
-
-    stocks :number,
-    setStocks :(value :number) => void,
 };
 
 
@@ -216,36 +166,12 @@ const SingleGameStore = create<Store>((set: any) => ({
     setTrendListData: (value) => set({ trendListData : value }),
 
     // 시장 정보 배열 데이터 상태관리 변수
-    rawMaterialListData :[],
-    setRawMaterialListData :(value) => set({ rawMaterialListData : value }),
+    marketInfoListData: [],
+    setMarketInfoListData: (value) => set({ marketInfoListData : value }),
 
     // 현재 선택한 주식 종목 index 상태관리 변수
     selectedStockIndex: 0,
     setSelectedStockIndex: (value) => set({ selectedStockIndex : value }),
-
-    singleGameEndInfoData: [],
-    setSingleGameEndInfoData: (value) => set({ singleGameEndInfoData : value }),
-
-    isBuy :false,
-    setIsBuy :(value) => set({ isBuy : value }),
-
-    isBuySellModalOpen :false,
-    setIsBuySellModalOpen :(value) => set({ isBuySellModalOpen : value }),
-
-    isOpenEndModal :false,
-    setIsOpenEndModal :(value) => set({ isOpenEndModal :value }),
-
-    selectedSecondaryIndicator : 1,
-    setSelectedSecondaryIndicator :(value) => set({ selectedSecondaryIndicator : value }),
-
-
-    startDate :null,
-    setStartDate :(value) => set({ startDate : value }),
-    endDate :null,
-    setEndDate :(value) => set({ endDate : value }),
-
-    stocks :0,
-    setStocks :(value) => set({ stocks : value }),
 }));
 
 export default SingleGameStore;

@@ -6,7 +6,6 @@ import type { FundResult } from "@/public/src/stores/fund/crud/FundCrudStore";
 import { FundInfo } from "@/public/src/stores/fund/crud/FundCrudStore";
 import { useState, useEffect } from "react";
 import fundCrudStore from "@/public/src/stores/fund/crud/FundCrudStore";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 const fetchFundInfo = async() => {
   const token = sessionStorage.getItem('accessToken')
@@ -24,10 +23,9 @@ export default function FundTable(){
   const [fundList, setFundList] = useState<FundResult[]>([])
   const [filteredFunds, setFilteredFunds] = useState<FundResult[]>([])
   const { searchQuery } = fundCrudStore();
-  const { data, isLoading, error }: UseQueryResult<FundInfo,Error>  =  useQuery('ManagerFundInfo', fetchFundInfo );
+  const { data, isLoading, error }: UseQueryResult<FundInfo,Error>  =  useQuery('FundInfo', fetchFundInfo );
   const router = useRouter();
-  const playClickSound = useClickSound();
-
+  
   useEffect(() => {
     // Filter fundList based on searchQuery when searchQuery changes
     const filtered: FundResult[] = fundList.filter((fund) => fund.fundName.includes(searchQuery));
@@ -48,7 +46,7 @@ export default function FundTable(){
   }
 
   const { result }: {result: FundResult[] | null} = data ? data: {result: null};
-  // console.log(result)
+  console.log(result)
   return (
     <div className="overflow-auto shadow-md sm:rounded-lg" style={{height: 'calc(50vh)'}}>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -77,7 +75,6 @@ export default function FundTable(){
                   return (
                     <tr key={i}
                       onClick={()=> {
-                        playClickSound();
                         if(fund.status == "RECRUITING"){
                           router.push(`./recruiting/${fund.fundId}`)
                         } else {

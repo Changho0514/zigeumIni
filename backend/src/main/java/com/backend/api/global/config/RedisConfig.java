@@ -1,6 +1,5 @@
 package com.backend.api.global.config;
 
-import com.backend.api.domain.multi.service.MultiGameRankService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,15 +22,15 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.data.redis.password}")
-    private String password;
+//    @Value("${spring.data.redis.password}")
+//    private String password;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-       RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host,port);
-       config.setPassword(password);
-       log.info("host: " + host);
-       return new LettuceConnectionFactory(config);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host,port);
+//        config.setPassword(password);
+        log.info("host: " + host);
+        return new LettuceConnectionFactory(config);
     }
 
     @Bean
@@ -54,12 +53,6 @@ public class RedisConfig {
         container.setConnectionFactory(connectionFactory);
         return container;
     }
-
-    @Bean
-    public MultiGameRankService multiGameRankService(RedisTemplate<String, Object> redisTemplate) {
-        return new MultiGameRankService(redisTemplate);
-    }
-
 
 }
 

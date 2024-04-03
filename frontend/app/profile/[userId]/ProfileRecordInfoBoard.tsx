@@ -2,8 +2,6 @@
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, UseQueryResult } from "react-query";
 import axios from "axios";
-import profileStore from "@/public/src/stores/profile/profileStore";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 interface resultType {
   id: number;
@@ -16,11 +14,10 @@ interface BoardInfo {
 }
 
 export default function UserRecordInfoBoard() {
-  const playClickSound = useClickSound();
   const router = useRouter();
   const params = useParams<{ userId?: string }>();
   const id: string | undefined = params.userId;
-  const { isBoardOpen, setIsBoardOpen } = profileStore();
+
   const fetchUserBoard = async () => {
     const response = await axios({
       method: "get",
@@ -49,7 +46,7 @@ export default function UserRecordInfoBoard() {
     : { result: null };
 
   return (
-    <div className="shadow row-span-5 overflow-auto p-4" style={{ maxHeight: "50vh" }}>
+    <div className="shadow row-span-5 overflow-auto max-h-96 p-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs bg-small-component-3 text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -67,10 +64,6 @@ export default function UserRecordInfoBoard() {
               <tr
                 className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 key={i}
-                onClick={() => {
-                  playClickSound();
-                  setIsBoardOpen(item.id);
-                }}
               >
                 <th
                   scope="row"

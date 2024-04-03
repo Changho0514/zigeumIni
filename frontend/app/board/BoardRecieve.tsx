@@ -2,20 +2,15 @@
 import Image from "next/image";
 import penguin from "./../../public/src/assets/images/penguin.png";
 import Swal from "sweetalert2";
-import { useQuery, UseQueryResult, useQueryClient } from "react-query";
-import { useMutation } from "react-query";
+import { useQuery, UseQueryResult } from "react-query";
 import axios, { AxiosResponse } from "axios";
 import useFetchUserInfo from "@/public/src/hooks/useFetchUserInfo";
 import userStore from "@/public/src/stores/user/userStore";
-import useGetProfileImage from "@/public/src/hooks/useGetProfileImage";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 interface ResultType {
   id: number;
   nickname: string;
   content: string;
-  communityFileList: string[];
-  asset: number;
 }
 
 interface BoardInfo {
@@ -29,44 +24,37 @@ interface DeleteBoardResponse {
 const deleteBoard = async (
   boardId: number
 ): Promise<AxiosResponse<DeleteBoardResponse>> => {
-  const response = await axios({
-    method: "delete",
-    url: `https://j10a207.p.ssafy.io/api/community?communityId=${boardId}`,
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-    },
-  });
-  return response;
+  try {
+    const response = await axios({
+      method: "delete",
+      url: `https://j10a207.p.ssafy.io/api/community?communityId=${boardId}`,
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+      },
+    });
+    Swal.fire("삭제됨!", "성공적으로 삭제되었습니다.", "success");
+    return response;
+  } catch (error) {
+    console.error("삭제 실패:", error);
+    Swal.fire("실패!", "삭제에 실패했습니다.", "error");
+    throw error; // 에러를 다시 throw 하여 호출 측에서 처리할 수 있도록 함
+  }
 };
-
-const fetchBoardInfo = async () => {
-  const response = await axios({
-    method: "get",
-    url: "https://j10a207.p.ssafy.io/api/community/all",
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-    },
-  });
-  return response.data;
-};
-
 export default function BoardReceive() {
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation(deleteBoard, {
-    onSuccess: () => {
-      Swal.fire("삭제됨!", "성공적으로 삭제되었습니다.", "success");
-      queryClient.invalidateQueries("boardInfo");
-    },
-    onError: (error) => {
-      console.error("삭제 실패:", error);
-      Swal.fire("실패!", "삭제에 실패했습니다.", "error");
-    },
-  });
-
-  
   useFetchUserInfo();
-  const playClickSound = useClickSound();
   const { nickname, memberId } = userStore();
+  
+  const fetchBoardInfo = async () => {
+    const response = await axios({
+      method: "get",
+      url: "https://j10a207.p.ssafy.io/api/community/all",
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data;
+  };
+  
   const { data, isLoading, error }: UseQueryResult<BoardInfo, Error> = useQuery(
     "boardInfo",
     fetchBoardInfo
@@ -82,8 +70,8 @@ export default function BoardReceive() {
   const { result }: { result: ResultType[] | null } = data
     ? data
     : { result: null };
+
   const handleDelete = (boardId: number): void => {
-    playClickSound();
     Swal.fire({
       title: "정말로 삭제하시겠습니까?",
       text: "이 작업은 되돌릴 수 없습니다!",
@@ -95,22 +83,18 @@ export default function BoardReceive() {
       cancelButtonText: "삭제안하기",
     }).then((result) => {
       if (result.isConfirmed) {
-        mutate(boardId);
+        deleteBoard(boardId);
       }
     });
   };
-  console.log(result);
+
   return (
-    <div style={{ maxHeight: "60vh" }} className="overflow-auto">
+    <div style={{ maxHeight: "40vh" }} className="overflow-auto">
       {result?.map((item, i) => {
         return (
           <div key={i}>
-            <div className="grid grid-cols-12">
-              <div
-                className={`col-start-2 col-end-11 min-h-40 rounded-md bg-small-${
-                  (item.id % 15) + 1
-                } m-2 w-200 h-100 shadow-lg hover:-translate-y-1 transition ease-in-out duration-500`}
-              >
+            <div className=" grid grid-cols-12">
+              <div className="col-start-4 col-end-9 min-h-40 rounded-md bg-small-14 m-2 w-200 h-100 shadow-lg hover:-translate-y-1 transition ease-in-out duration-500">
                 <div className="m-4 grid-rows-4">
                   <div className="flex justify-between">
                     <div className="px-2 bg-white rounded-md">
@@ -128,28 +112,17 @@ export default function BoardReceive() {
                     )}
                   </div>
                   <div className="my-2 py-2 min-h-40 bg-white rounded-md">
-                    <div className="p-4 m-4">
-                      {item.content}
-                      {item.communityFileList.map((photo, i) => {
-                        return (
-                          <img
-                            key={i}
-                            className="w-full"
-                            src={photo}
-                            alt={`${i}번째사진`}
-                          ></img>
-                        );
-                      })}
-                    </div>
+                    <div className="m-4">{item.content}</div>
                   </div>
                 </div>
               </div>
               <div className="flex justify-center items-center">
                 <Image
-                  className="rounded-full ring-1 ring-background-1 dark:ring-gray-500"
-                  src={useGetProfileImage(item.asset)}
+                  className="w-24 h-24 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
+                  src={penguin}
                   alt="Extra large avatar"
-                  width={90}
+                  width={100}
+                  height={100}
                 ></Image>
               </div>
             </div>

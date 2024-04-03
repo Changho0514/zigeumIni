@@ -2,7 +2,6 @@
 import { useRouter, useParams } from "next/navigation";
 import { useQuery, UseQueryResult } from "react-query";
 import axios from "axios";
-import useClickSound from "@/public/src/components/clickSound/DefaultClick";
 
 interface resultType {
   players: number;
@@ -17,7 +16,6 @@ interface MultiGameInfo {
 }
 
 export default function UserRecordInfoMulti() {
-  const playClickSound = useClickSound();
   const router = useRouter();
   const params = useParams<{ userId?: string }>();
   const id: string | undefined = params.userId;
@@ -48,10 +46,7 @@ export default function UserRecordInfoMulti() {
     : { result: null };
 
   return (
-    <div
-      className="shadow row-span-5 relative overflow-auto  p-4"
-      style={{ maxHeight: "50vh" }}
-    >
+    <div className="shadow row-span-5 relative overflow-auto max-h-96 p-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -75,7 +70,6 @@ export default function UserRecordInfoMulti() {
               <tr
                 className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 onClick={() => {
-                  playClickSound();
                   router.push(`${id}/multi/${item.multiGameLogId}`);
                 }}
                 key={i}
@@ -88,7 +82,7 @@ export default function UserRecordInfoMulti() {
                 </th>
                 <td className="px-6 py-4">{item.players}명</td>
                 <td className="px-6 py-4">{item.ranking}등</td>
-                <td className="px-6 py-4">{item.finalRoi.toFixed(2)}%</td>
+                <td className="px-6 py-4">{item.finalRoi}%</td>
               </tr>
             );
           })}
